@@ -1,29 +1,30 @@
 package com.bookstore.controller;
 
-import com.bookstore.dto.*;
-import com.bookstore.security.JwtUtil;
+import com.bookstore.config.JWTUtil;
+import com.bookstore.dto.AuthRequest;
+import com.bookstore.dto.AuthResponse;
+import com.bookstore.entity.User;
 import com.bookstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
-    @Autowired private AuthenticationManager authManager;
-    @Autowired private JwtUtil jwtUtil;
-    @Autowired private UserService userService;
 
-    @PostMapping("/signup")
-    public String signup(@RequestBody AuthRequest req) {
-        userService.registerUser(req.username, req.password, "ROLE_USER");
-        return "User created!";
+    @Autowired private UserService userService;
+    @Autowired private JWTUtil jwtUtil;
+
+    @PostMapping("/register")
+    public String register(@RequestBody AuthRequest request) {
+        userService.registerUser(request.getUsername(), request.getPassword());
+        return "User registered successfully";
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest req) {
-        authManager.authenticate(new UsernamePasswordAuthenticationToken(req.username, req.password));
-        String token = jwtUtil.generateToken(req.username);
-        return new AuthResponse();
+    public AuthResponse login(@RequestBody AuthRequest request) {
+        User user = userService.authenticate(request.getUsername(), request.getPassword());
+        String token = jwtUtil.generateToken(user.getUsername());
+        return new AuthResponse(token);
     }
 }

@@ -1,11 +1,11 @@
-package com;
+package com.bookstore;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OnlineBookstoreApplication {
+public class BookstoreApplication {
     public static void main(String[] args) {
-        SpringApplication.run(OnlineBookstoreApplication.class, args);
+        SpringApplication.run(BookstoreApplication.class, args);
     }
 }
